@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visualizador de Mídias</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <script>
+        let midias = {{ midias | tojson }};
+        let currentIndex = 0;
+
+        function showNextMedia() {
+            const viewer = document.getElementById('media-viewer');
+            const media = midias[currentIndex];
+
+            if (media.tipo_midia === 'imagem') {
+                viewer.innerHTML = `<img src="${media.url}" alt="Mídia" style="width: 100%; height: 100%;">`;
+            } else if (media.tipo_midia === 'video') {
+                viewer.innerHTML = `
+                    <video src="${media.url}" autoplay loop muted style="width: 100%; height: 100%;"></video>
+                `;
+            }
+
+            currentIndex = (currentIndex + 1) % midias.length;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            showNextMedia();
+            setInterval(showNextMedia, 30000); // Troca a cada 30 segundos
+        });
+    </script>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+        #media-viewer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="media-viewer"></div>
+</body>
+</html>
